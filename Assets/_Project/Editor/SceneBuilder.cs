@@ -36,9 +36,6 @@ namespace DroneSim.EditorTools
             foreach (string legacy in LegacyAssets)
                 AssetDatabase.DeleteAsset(legacy);
 
-            var normalTuning = LoadOrCreateAsset<FlightTuning>(SettingsDir + "/DefaultFlightTuning.asset", null);
-            var sportTuning = LoadOrCreateAsset<FlightTuning>(SettingsDir + "/SportFlightTuning.asset", ApplySportDefaults);
-
             var scene = EditorSceneManager.NewScene(NewSceneSetup.EmptyScene, NewSceneMode.Single);
             MeshLibrary.Begin();
             MaterialLibrary.Begin();
@@ -46,6 +43,11 @@ namespace DroneSim.EditorTools
             EnvironmentBuilder.Build();
             FactoryBuilder.Build();
             FactoryBuilder.BuildCourse(new GameObject("Gameplay").transform);
+
+            // Load the tuning assets only now: the hundreds of texture imports above can unload assets that were
+            // loaded earlier, and a stale reference would be serialized into the scene as "None".
+            var normalTuning = LoadOrCreateAsset<FlightTuning>(SettingsDir + "/DefaultFlightTuning.asset", null);
+            var sportTuning = LoadOrCreateAsset<FlightTuning>(SettingsDir + "/SportFlightTuning.asset", ApplySportDefaults);
 
             GameObject drone = CreateDrone(normalTuning, sportTuning);
             var input = drone.GetComponent<FlightInputProvider>();
@@ -223,6 +225,9 @@ namespace DroneSim.EditorTools
 
         static void SetSerialized(Object target, string field, Object value)
         {
+            // Unity's == null also catches destroyed/unloaded objects, which would otherwise save as "None".
+            if (value == null)
+                throw new System.ArgumentNullException(nameof(value), $"{target.GetType().Name}.{field} would be empty");
             var serialized = new SerializedObject(target);
             var property = serialized.FindProperty(field);
             if (property == null)
