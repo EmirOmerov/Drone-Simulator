@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ae6c9bb3de5713e4da8a11aaba077973, type: 3}
+  m_Name: DefaultFlightTuning
+  m_EditorClassIdentifier: DroneSim.Runtime::DroneSim.Flight.FlightTuning
+  mass: 1
+  linearDrag: 0.6
+  maxTiltDegrees: 30
+  attitudeP: 150
+  attitudeD: 24
+  maxYawRateDegrees: 100
+  yawRateP: 8
+  maxClimbRate: 3
+  maxDescentRate: 2
+  climbRateP: 3
+  throttleHoldBand: 0.05
+  altitudeP: 4
+  altitudeD: 3.6
+  maxThrustAcceleration: 25
